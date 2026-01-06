@@ -1,10 +1,12 @@
-# mrarea
+# mrtools
 
-A Python CLI tool that calculates roof areas for CityJSON buildings.
+A Python CLI tool suite, made for the MultiRoofs project, for processing CityJSON files.
 
-## Description
+## Tools
 
-`mrarea` processes CityJSON files containing Buildings (and BuildingParts) and adds a `total_area_roof` attribute to each CityObject. The value is calculated as the sum of areas of all surfaces semantically labeled as "RoofSurface".
+### roofarea
+
+The `roofarea` command processes CityJSON files containing Buildings (and BuildingParts) and adds a `total_area_roof` attribute to each CityObject. The value is calculated as the sum of areas of all surfaces semantically labeled as "RoofSurface".
 
 If a building has no semantic information, `total_area_roof` is set to 0.0.
 
@@ -18,13 +20,7 @@ If a building has no semantic information, `total_area_roof` is set to 0.0.
 
 ## Installation
 
-Using uv (recommended):
-
-```bash
-uv add typer
-```
-
-Or install the package in development mode:
+Install the package in development mode:
 
 ```bash
 uv pip install -e .
@@ -32,22 +28,16 @@ uv pip install -e .
 
 ## Usage
 
-Basic usage (overwrites input file):
+Basic usage:
 
 ```bash
-uv run mrarea input.city.json
-```
-
-Specify an output file:
-
-```bash
-uv run mrarea input.city.json -o output.city.json
+uv run mrtools roofarea input.city.json -o output.city.json
 ```
 
 Verbose mode (shows processing details):
 
 ```bash
-uv run mrarea input.city.json --verbose
+uv run mrtools roofarea input.city.json -o output.city.json --verbose
 ```
 
 ### Example Output
@@ -62,14 +52,6 @@ Processing: data/3dbag_b2.city.json
 ✓ Output written to: data/3dbag_b2_output.city.json
 ```
 
-## How It Works
-
-1. **Loads CityJSON file** using Python's standard library JSON parser
-2. **Identifies roof surfaces** by checking semantic labels for "RoofSurface" type
-3. **Calculates areas** using Newell's method for 3D polygon area calculation
-4. **Adds attribute** `total_area_roof` to each CityObject's attributes
-5. **Writes output** back to file (or specified output file)
-
 ### Geometry Support
 
 The tool handles both geometry types found in CityJSON:
@@ -77,26 +59,21 @@ The tool handles both geometry types found in CityJSON:
 - **Solid geometry** (e.g., Dutch 3D BAG): `boundaries[shell][face][ring][vertex]`
 - **MultiSurface geometry** (e.g., Montreal dataset): `boundaries[face][ring][vertex]`
 
-### Area Calculation
-
-Uses **Newell's method** for calculating 3D polygon areas, which:
-- Works for non-planar polygons
-- Handles any orientation in 3D space
-- Is numerically stable
 
 ## Project Structure
 
 ```
-mrarea/
+mrtools/
 ├── src/
-│   └── mrarea/
+│   └── mrtools/
 │       ├── __init__.py         # Package initialization
-│       ├── cli.py              # Typer CLI interface
+│       ├── cli.py              # Typer CLI interface with subcommands
 │       ├── processor.py        # CityJSON processing logic
 │       └── geometry.py         # Geometric calculations
 ├── data/                       # Sample CityJSON files
 │   ├── 3dbag_b2.city.json
 │   └── montréal_b4.city.json
+├── tests/                      # Test files
 ├── pyproject.toml              # Project configuration
 └── README.md
 ```
@@ -105,12 +82,5 @@ mrarea/
 
 - Python >= 3.13
 - typer >= 0.12.0
-
-## License
-
-See project license file.
-
-## References
-
-- [CityJSON Specifications](https://www.cityjson.org/)
-- [CityJSON 2.0.1 Schema](https://3d.bk.tudelft.nl/schemas/cityjson/2.0.1/)
+- cjio >= 0.10.1
+- pytest >= 9.0.2 (dev dependency)
