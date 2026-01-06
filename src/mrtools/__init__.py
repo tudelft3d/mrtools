@@ -1,3 +1,3 @@
-"""mrtools - Tools for processing CityJSON files."""
+"""mrtools - MultiRoofs tools for processing CityJSON files."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

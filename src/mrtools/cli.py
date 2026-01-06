@@ -1,12 +1,14 @@
 """Command-line interface for mrtools."""
 
-import typer
 from pathlib import Path
-from .processor import process_cityjson
+
+import typer
+
 from . import __version__
+from .processor import process_cityjson
 
 app = typer.Typer(
-    help="Tools for processing CityJSON files.",
+    help="MultiRoofs tools for processing CityJSON files.",
     no_args_is_help=True,
 )
 
@@ -57,10 +59,10 @@ def roofarea(
     ),
 ) -> None:
     """
-    Calculate total roof area for all CityObjects.
+    Calculate total roof area for all Buildings (and BuildingParts).
 
     Calculates the total area of all surfaces semantically labeled as
-    "RoofSurface" for each CityObject and adds this as a 'total_area_roof'
+    "RoofSurface" for each Building(Part) and adds this as a 'total_area_roof'
     attribute.
 
     If a building has no semantic information, total_area_roof is set to 0.0.
@@ -85,9 +87,7 @@ def roofarea(
                     break
                 roof_area = obj_data.get("attributes", {}).get("total_area_roof", 0.0)
                 obj_type = obj_data.get("type", "Unknown")
-                typer.echo(
-                    f"  {obj_id} ({obj_type}): {roof_area:.2f} m²"
-                )
+                typer.echo(f"  {obj_id} ({obj_type}): {roof_area:.2f} m²")
 
             if num_objects > 3:
                 typer.echo(f"  ... and {num_objects - 3} more objects")

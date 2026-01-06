@@ -1,6 +1,6 @@
 # mrtools
 
-A Python CLI tool suite, made for the MultiRoofs project, for processing CityJSON files.
+A Python CLI tool suite, made for the [MultiRoofs project](https://multiroofs.nweurope.eu/), for processing CityJSON files.
 
 ## Tools
 
@@ -10,13 +10,6 @@ The `roofarea` command processes CityJSON files containing Buildings (and Buildi
 
 If a building has no semantic information, `total_area_roof` is set to 0.0.
 
-## Features
-
-- ✅ Processes CityJSON 2.0 files
-- ✅ Handles both `Solid` and `MultiSurface` geometry types
-- ✅ Supports Buildings with BuildingParts
-- ✅ Uses Newell's method for accurate 3D polygon area calculation
-- ✅ Gracefully handles missing semantic information
 
 ## Installation
 
@@ -79,6 +72,9 @@ mrtools/
 ```
 
 ## Requirements
+
+`pip install typer cjio`
+
 
 - Python >= 3.13
 - typer >= 0.12.0
