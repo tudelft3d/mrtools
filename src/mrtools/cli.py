@@ -1,17 +1,40 @@
-"""Command-line interface for mrarea."""
+"""Command-line interface for mrtools."""
 
 import typer
 from pathlib import Path
-from typing import Optional
 from .processor import process_cityjson
+from . import __version__
 
 app = typer.Typer(
-    help="Calculate roof areas for CityJSON buildings and add total_area_roof attributes."
+    help="Tools for processing CityJSON files.",
+    no_args_is_help=True,
 )
 
 
-@app.command()
+def version_callback(value: bool):
+    """Show version and exit."""
+    if value:
+        typer.echo(f"mrtools version {__version__}")
+        raise typer.Exit()
+
+
+@app.callback()
 def main(
+    version: bool = typer.Option(
+        None,
+        "--version",
+        "-V",
+        callback=version_callback,
+        is_eager=True,
+        help="Show version and exit",
+    ),
+):
+    """Tools for processing CityJSON files."""
+    pass
+
+
+@app.command()
+def roofarea(
     input_file: Path = typer.Argument(
         ...,
         exists=True,
@@ -20,11 +43,11 @@ def main(
         readable=True,
         help="Path to input CityJSON file",
     ),
-    output_file: Optional[Path] = typer.Option(
-        None,
+    output_file: Path = typer.Option(
+        ...,
         "--output",
         "-o",
-        help="Path to output file (default: overwrites input file)",
+        help="Path to output file",
     ),
     verbose: bool = typer.Option(
         False,
@@ -34,9 +57,9 @@ def main(
     ),
 ) -> None:
     """
-    Process a CityJSON file and add roof area attributes to all CityObjects.
+    Calculate total roof area for all CityObjects.
 
-    The tool calculates the total area of all surfaces semantically labeled as
+    Calculates the total area of all surfaces semantically labeled as
     "RoofSurface" for each CityObject and adds this as a 'total_area_roof'
     attribute.
 
@@ -69,8 +92,7 @@ def main(
             if num_objects > 3:
                 typer.echo(f"  ... and {num_objects - 3} more objects")
 
-        output_path = output_file if output_file else input_file
-        typer.echo(f"✓ Output written to: {output_path}")
+        typer.echo(f"✓ Output written to: {output_file}")
 
     except FileNotFoundError:
         typer.echo(f"Error: File not found: {input_file}", err=True)

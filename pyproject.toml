@@ -1,15 +1,16 @@
 [project]
-name = "mrarea"
+name = "mrtools"
 version = "0.1.0"
-description = "Calculate roof areas for CityJSON buildings"
+description = "Tools for processing CityJSON files"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "cjio>=0.10.1",
     "typer>=0.12.0",
 ]
 
 [project.scripts]
-mrarea = "mrarea.cli:app"
+mrtools = "mrtools.cli:app"
 
 [build-system]
 requires = ["hatchling"]
