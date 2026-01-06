@@ -1,0 +1,53 @@
+{
+  "type": "CityJSON",
+  "version": "2.0",
+  "transform": {
+    "scale": [0.001, 0.001, 0.001],
+    "translate": [0.0, 0.0, 0.0]
+  },
+  "CityObjects": {
+    "house-1": {
+      "type": "Building",
+      "geometry": [
+        {
+          "type": "MultiSurface",
+          "lod": "2",
+          "boundaries": [
+            [[0, 1, 2, 3]],
+            [[4, 5, 6, 7]],
+            [[0, 1, 5, 4]],
+            [[1, 2, 6, 5]],
+            [[2, 3, 7, 6]],
+            [[3, 0, 4, 7]],
+            [[4, 5, 8]],
+            [[5, 6, 8]],
+            [[6, 7, 8]],
+            [[7, 4, 8]]
+          ],
+          "semantics": {
+            "surfaces": [
+              {"type": "GroundSurface"},
+              {"type": "WallSurface"},
+              {"type": "RoofSurface"}
+            ],
+            "values": [0, 1, 1, 1, 1, 1, 2, 2, 2, 2]
+          }
+        }
+      ]
+    }
+  },
+  "vertices": [
+    [0, 0, 0],
+    [5000, 0, 0],
+    [5000, 5000, 0],
+    [0, 5000, 0],
+    [0, 0, 3000],
+    [5000, 0, 3000],
+    [5000, 5000, 3000],
+    [0, 5000, 3000],
+    [2500, 2500, 5000]
+  ],
+  "metadata": {
+    "referenceSystem": "https://www.opengis.net/def/crs/EPSG/0/7415"
+  }
+}
