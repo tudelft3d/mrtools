@@ -74,6 +74,37 @@ class TestCityJSONIntegration:
         finally:
             output_path.unlink()
 
+    def test_otb_fixture(self):
+        """Test processing OTB building to see if many holes are supported."""
+        fixture_path = Path(__file__).parent / "fixtures" / "otb22.city.json"
+
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
+            output_path = Path(tmp.name)
+
+        try:
+            result = process_cityjson(fixture_path, output_path)
+
+            # Check that attribute was added
+            torus_obj = result["CityObjects"]["NL.IMBAG.Pand.0503100000031316"]
+            assert "total_area_roof" in torus_obj["attributes"]
+
+            # Torus has one roof surface (top face) with area 1x1-smth
+            roof_area = torus_obj["attributes"]["total_area_roof"]
+            assert abs(roof_area - 2235.493) < 1e-2
+
+            # Verify output file was written
+            assert output_path.exists()
+
+            # Verify output is valid JSON
+            with open(output_path) as f:
+                output_data = json.load(f)
+            assert output_data["type"] == "CityJSON"
+
+        finally:
+            output_path.unlink()
+
     def test_simple_house_fixture(self):
         """Test processing house with pyramid roof."""
         fixture_path = Path(__file__).parent / "fixtures" / "simple_house.city.json"
