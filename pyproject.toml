@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "cjio>=0.10.1",
+    "pytest>=9.0.2",
     "typer>=0.12.0",
 ]
 
@@ -15,8 +16,3 @@ mrtools = "mrtools.cli:app"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = [
-    "pytest>=9.0.2",
-]

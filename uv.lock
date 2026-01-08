@@ -72,22 +72,16 @@ version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "cjio" },
-    { name = "typer" },
-]
-
-[package.dev-dependencies]
-dev = [
     { name = "pytest" },
+    { name = "typer" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "cjio", specifier = ">=0.10.1" },
+    { name = "pytest", specifier = ">=9.0.2" },
     { name = "typer", specifier = ">=0.12.0" },
 ]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.0.2" }]
 
 [[package]]
 name = "numpy"
