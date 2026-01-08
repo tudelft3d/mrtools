@@ -5,7 +5,6 @@ description = "MultiRoofs tools for processing CityJSON files"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "cjio>=0.10.1",
     "pytest>=9.0.2",
     "typer>=0.12.0",
 ]
