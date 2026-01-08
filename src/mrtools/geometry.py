@@ -83,9 +83,9 @@ def calculate_surface_area(
 
     A boundary in CityJSON can have multiple rings:
     - First ring (index 0): outer boundary
-    - Subsequent rings: holes
+    - Subsequent rings: holes (inner rings)
 
-    For calculating total roof area, we only use the outer ring.
+    The total area is calculated as the outer ring area minus the area of all holes.
 
     Args:
         boundary: List of rings, where each ring is a list of vertex indices
@@ -98,7 +98,7 @@ def calculate_surface_area(
     if not boundary or len(boundary) == 0:
         return 0.0
 
-    # Use only the outer ring (first ring)
+    # Calculate outer ring area (first ring)
     outer_ring_indices = boundary[0]
 
     if len(outer_ring_indices) < 3:
@@ -110,4 +110,16 @@ def calculate_surface_area(
     ]
 
     # Calculate area using Newell's method
-    return calculate_polygon_area_3d(coords_3d)
+    outer_area = calculate_polygon_area_3d(coords_3d)
+
+    # Subtract area of holes (inner rings)
+    for inner_ring_indices in boundary[1:]:
+        if len(inner_ring_indices) >= 3:
+            inner_coords_3d = [
+                transform_vertex(vertices_global[idx], transform)
+                for idx in inner_ring_indices
+            ]
+            hole_area = calculate_polygon_area_3d(inner_coords_3d)
+            outer_area -= hole_area
+
+    return outer_area

@@ -179,14 +179,14 @@ class TestCalculateSurfaceArea:
         assert abs(area - 50.0) < 1e-8  # 10 * 5 = 50
 
     def test_boundary_with_hole(self):
-        """Test that only outer ring is used (holes are ignored)."""
+        """Test that holes (inner rings) are correctly subtracted from outer ring."""
         # Outer square (2x2)
         vertices_global = [
             [0, 0, 0],
             [2000, 0, 0],
             [2000, 2000, 0],
             [0, 2000, 0],
-            # Inner square (1x1) - this hole should be ignored
+            # Inner square (1x1) - hole that should be subtracted
             [500, 500, 0],
             [1500, 500, 0],
             [1500, 1500, 0],
@@ -196,8 +196,8 @@ class TestCalculateSurfaceArea:
         transform = {"scale": [0.001, 0.001, 0.001], "translate": [0.0, 0.0, 0.0]}
 
         area = calculate_surface_area(boundary, vertices_global, transform)
-        # Should return outer ring area (4.0), not subtract hole
-        assert abs(area - 4.0) < 1e-10
+        # Should return outer ring area minus hole: 4.0 - 1.0 = 3.0
+        assert abs(area - 3.0) < 1e-10
 
     def test_empty_boundary(self):
         """Test with empty boundary returns zero."""

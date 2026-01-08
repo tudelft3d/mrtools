@@ -1,9 +1,11 @@
 """Integration tests using test fixtures."""
 
-import pytest
 import json
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from mrtools.processor import process_cityjson
 
 
@@ -14,7 +16,9 @@ class TestCityJSONIntegration:
         """Test processing cube with known roof area (10x10 = 100)."""
         fixture_path = Path(__file__).parent / "fixtures" / "cube.city.json"
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             output_path = Path(tmp.name)
 
         try:
@@ -39,11 +43,44 @@ class TestCityJSONIntegration:
         finally:
             output_path.unlink()
 
+    def test_torus_fixture(self):
+        """Test processing torus to see if holes in surfaces is supported."""
+        fixture_path = Path(__file__).parent / "fixtures" / "torus.city.json"
+
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
+            output_path = Path(tmp.name)
+
+        try:
+            result = process_cityjson(fixture_path, output_path)
+
+            # Check that attribute was added
+            torus_obj = result["CityObjects"]["id-1"]
+            assert "total_area_roof" in torus_obj["attributes"]
+
+            # Torus has one roof surface (top face) with area 1x1-smth
+            roof_area = torus_obj["attributes"]["total_area_roof"]
+            assert abs(roof_area - 0.875) < 1e-8
+
+            # Verify output file was written
+            assert output_path.exists()
+
+            # Verify output is valid JSON
+            with open(output_path) as f:
+                output_data = json.load(f)
+            assert output_data["type"] == "CityJSON"
+
+        finally:
+            output_path.unlink()
+
     def test_simple_house_fixture(self):
         """Test processing house with pyramid roof."""
         fixture_path = Path(__file__).parent / "fixtures" / "simple_house.city.json"
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             output_path = Path(tmp.name)
 
         try:
@@ -69,7 +106,9 @@ class TestCityJSONIntegration:
         """Test processing building with no semantic information."""
         fixture_path = Path(__file__).parent / "fixtures" / "no_semantics.city.json"
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             output_path = Path(tmp.name)
 
         try:
@@ -114,11 +153,15 @@ class TestCityJSONIntegration:
             "vertices": [[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0]],
         }
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             input_path = Path(tmp.name)
             json.dump(cityjson_data, tmp)
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             output_path = Path(tmp.name)
 
         try:
@@ -178,23 +221,37 @@ class TestCityJSONIntegration:
             "vertices": [[0, 0, 0], [5, 0, 0], [5, 5, 0], [0, 5, 0]],
         }
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             input_path = Path(tmp.name)
             json.dump(cityjson_data, tmp)
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".city.json", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".city.json", delete=False
+        ) as tmp:
             output_path = Path(tmp.name)
 
         try:
             result = process_cityjson(input_path, output_path)
 
             # Both buildings should have roof area calculated
-            assert "total_area_roof" in result["CityObjects"]["building-1"]["attributes"]
-            assert "total_area_roof" in result["CityObjects"]["building-2"]["attributes"]
+            assert (
+                "total_area_roof" in result["CityObjects"]["building-1"]["attributes"]
+            )
+            assert (
+                "total_area_roof" in result["CityObjects"]["building-2"]["attributes"]
+            )
 
             # Both should have area 5x5 = 25
-            assert result["CityObjects"]["building-1"]["attributes"]["total_area_roof"] == 25.0
-            assert result["CityObjects"]["building-2"]["attributes"]["total_area_roof"] == 25.0
+            assert (
+                result["CityObjects"]["building-1"]["attributes"]["total_area_roof"]
+                == 25.0
+            )
+            assert (
+                result["CityObjects"]["building-2"]["attributes"]["total_area_roof"]
+                == 25.0
+            )
 
         finally:
             input_path.unlink()
