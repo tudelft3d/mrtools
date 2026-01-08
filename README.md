@@ -49,8 +49,8 @@ Processing: data/3dbag_b2.city.json
 
 The tool handles both geometry types found in CityJSON:
 
-- **Solid geometry** (e.g., Dutch 3D BAG): `boundaries[shell][face][ring][vertex]`
-- **MultiSurface geometry** (e.g., Montreal dataset): `boundaries[face][ring][vertex]`
+- **Solid geometry** (e.g., Dutch 3DBAG): `boundaries[shell][face][ring][vertex]`
+- **MultiSurface geometry** (e.g., Montréal dataset): `boundaries[face][ring][vertex]`
 
 
 ## Project Structure
@@ -71,12 +71,14 @@ mrtools/
 └── README.md
 ```
 
+### Unit tests
+
+`uv run pytest`
+
 ## Requirements
 
-`pip install typer cjio`
-
+`pip install typer pytest`
 
 - Python >= 3.13
 - typer >= 0.12.0
-- cjio >= 0.10.1
-- pytest >= 9.0.2 (dev dependency)
+- pytest >= 9.0.2
